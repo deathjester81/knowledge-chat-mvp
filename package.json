@@ -1,0 +1,21 @@
+{
+  "name": "knowledge-chat-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "create-index": "tsx scripts/create_search_index.ts",
+    "ingest": "tsx scripts/ingest_onedrive.ts",
+    "check-index": "tsx scripts/check_index.ts"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "mammoth": "^1.11.0",
+    "officegen": "^0.6.5",
+    "pdf-parse": "^2.4.5",
+    "pptx2json": "^0.0.10"
+  }
+}
