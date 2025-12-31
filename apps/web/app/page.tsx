@@ -19,6 +19,7 @@ export default function Home() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isIngesting, setIsIngesting] = useState(false);
+  const [ingestAvailable, setIngestAvailable] = useState<boolean | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -28,6 +29,14 @@ export default function Home() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // Check if ingestion is available
+    fetch('/api/ingest/available')
+      .then((res) => res.json())
+      .then((data) => setIngestAvailable(data.available))
+      .catch(() => setIngestAvailable(false));
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -122,8 +131,8 @@ export default function Home() {
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Knowledge Chat
           </h1>
-          {/* Only show ingest button when not on Vercel (serverless) */}
-          {typeof window !== 'undefined' && !window.location.hostname.includes('vercel.app') && (
+          {/* Only show ingest button when ingestion is available (not on Vercel) */}
+          {ingestAvailable === true && (
             <button
               onClick={handleIngest}
               disabled={isIngesting}
