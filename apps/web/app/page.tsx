@@ -91,10 +91,15 @@ export default function Home() {
       if (data.success) {
         alert(`Ingestion erfolgreich abgeschlossen!\n\n${data.output || ''}`);
       } else {
-        const errorMsg = data.error 
-          ? `Fehler: ${data.message}\n\nDetails:\n${data.error}`
-          : data.message;
-        alert(`Ingestion fehlgeschlagen: ${errorMsg}`);
+        // Check if it's a Vercel-specific error
+        if (response.status === 400 && data.message?.includes('not supported on Vercel')) {
+          alert(`⚠️ Ingestion auf Vercel nicht verfügbar\n\n${data.error || data.message}\n\nBitte führe die Ingestion lokal aus mit: npm run ingest`);
+        } else {
+          const errorMsg = data.error 
+            ? `Fehler: ${data.message}\n\nDetails:\n${data.error}`
+            : data.message;
+          alert(`Ingestion fehlgeschlagen: ${errorMsg}`);
+        }
         console.error('Ingest error:', data);
       }
     } catch (error) {

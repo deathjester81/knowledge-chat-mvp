@@ -9,6 +9,18 @@ import { spawn, ChildProcess } from 'child_process';
 import { resolve } from 'path';
 
 export async function POST(): Promise<NextResponse> {
+  // Check if running on Vercel (serverless environment)
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Ingestion is not supported on Vercel serverless functions',
+        error: 'The ingestion process requires long-running processes and file system access, which are not available in serverless environments. Please run ingestion locally using: npm run ingest',
+      },
+      { status: 400 }
+    );
+  }
+
   try {
     // Spawn the ingestion script
     // process.cwd() in Next.js API routes is apps/web
