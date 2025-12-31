@@ -5,20 +5,22 @@
  */
 
 import { NextResponse } from 'next/server';
-import { spawn } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import { resolve } from 'path';
 
-export async function POST() {
+export async function POST(): Promise<NextResponse> {
   try {
     // Spawn the ingestion script
     // process.cwd() in Next.js API routes is apps/web
     const projectRoot = resolve(process.cwd(), '../..');
     const scriptPath = resolve(projectRoot, 'scripts/ingest_onedrive.ts');
     
-    return new Promise((resolvePromise) => {
+    return new Promise<NextResponse>((resolvePromise) => {
       // On Windows, use cmd.exe to run npx (finds it in PATH)
       // This avoids ENOENT errors when npx is not directly in PATH
       const isWindows = process.platform === 'win32';
+      
+      let child: ChildProcess | undefined;
       
       // Set a timeout (30 minutes max for ingestion)
       const timeout = setTimeout(() => {
@@ -36,8 +38,6 @@ export async function POST() {
           );
         }
       }, 30 * 60 * 1000); // 30 minutes
-      
-      let child;
       if (isWindows) {
         // Windows: use cmd.exe /c to run npx
         child = spawn('cmd.exe', ['/c', 'npx', 'tsx', scriptPath], {
