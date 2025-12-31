@@ -122,13 +122,16 @@ export default function Home() {
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Knowledge Chat
           </h1>
-          <button
-            onClick={handleIngest}
-            disabled={isIngesting}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isIngesting ? 'Lädt...' : 'Daten aktualisieren'}
-          </button>
+          {/* Only show ingest button when not on Vercel (serverless) */}
+          {typeof window !== 'undefined' && !window.location.hostname.includes('vercel.app') && (
+            <button
+              onClick={handleIngest}
+              disabled={isIngesting}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isIngesting ? 'Lädt...' : 'Daten aktualisieren'}
+            </button>
+          )}
         </div>
       </header>
 
